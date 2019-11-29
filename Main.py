@@ -36,21 +36,25 @@ class Main():
         if int(sys.argv[1]) == 1:
             repeticion = True
             while repeticion == True:
-                self.mostrarAdministrador()
-                valor0 = int(input("Input del Administrador\n"))
-                if valor0 == 1:
-                    admin.agregarRuta()
-                elif valor0 == 2:
-                    admin.agregarParada()
-                elif valor0 == 3:
-                    admin.eliminarParada()
-                elif valor0 == 4:
-                    admin.eliminarRuta()
-                elif valor0 == 5:
-                    print("Adios")
-                    repeticion = False
-                else:
+                try:
+                    self.mostrarAdministrador()
+                    valor0 = int(input("Input del Administrador\n"))
+                    if valor0 == 1:
+                        admin.agregarRuta()
+                    elif valor0 == 2:
+                        admin.agregarParada()
+                    elif valor0 == 3:
+                        admin.eliminarParada()
+                    elif valor0 == 4:
+                        admin.eliminarRuta()
+                    elif valor0 == 5:
+                        print("Adios")
+                        repeticion = False
+                    else:
+                        print("No es opcion valida")
+                except:
                     print("No es opcion valida")
+
         elif int(sys.argv[1]) == 2:
             repeticion = True
             vendedor = FacadeVendedor("Isay",self.cursor,self.connection)
@@ -59,17 +63,20 @@ class Main():
             #vendedor.ventaBoletos("01-01-01 01-01-01","e","h")
         #vendedor.borrarBoletos("BVJ77")
             while repeticion == True:
-                self.mostrarVendedor()
-                valor1 = int(input("Input del vendedor\n"))
-                if valor1 == 1:
-                    vendedor.ventaBoletos()
-                elif valor1 == 2:
-                    vendedor.borrarBoletos()
-                elif valor1 == 3:
-                    repeticion = False;
-                    print("Adios")
-                else:
-                    print("Opcion no valida")
+                try:
+                    self.mostrarVendedor()
+                    valor1 = int(input("Input del vendedor\n"))
+                    if valor1 == 1:
+                        vendedor.ventaBoletos()
+                    elif valor1 == 2:
+                        vendedor.borrarBoletos()
+                    elif valor1 == 3:
+                        repeticion = False;
+                        print("Adios")
+                    else:
+                        print("Opcion no valida")
+                except:
+                    print("NO es opcion valida")
         #admin.eliminarRuta("h")
         #vendedor.ventaBoletos("=1=1=1","a","h")
         #vendedor.ventaBoletos("=1=1=1","a","h")

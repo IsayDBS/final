@@ -10,6 +10,28 @@ class Vendedor(Persona):
 #    def obtenerTickets(self):
 #        pass
 
+    #Imprime las rutas y los boletos en ella
+    def rutaYBoletosDisponibles(self,entrada,salida):
+        string=self.getRutas2Paradas(entrada,salida)
+        if string == "":
+            print("No hay ruta que pase por estas dos paradas")
+            return []
+        lista = self.stringLista(string)
+        boletos_disponibles = []
+        for l in lista:
+            ruta=self.getRuta(l)
+            boletos_disponibles.append(self.boletosDisponibles(ruta,entrada,salida))
+        #print(boletos_disponibles)
+        lista2 = []
+        for i in range(len(lista)):
+            if boletos_disponibles[i] == 0:
+                #boletos_disponibles.pop(i)
+                #lista.pop(i)
+                continue
+            print(str(i+1) + "." + lista[i].capitalize() + " tiene " + str(boletos_disponibles[i]) + " boletos." )
+            lista2.append(lista[i])
+        return lista2
+
     def boletosDisponibles(self,ruta,entrada,salida):
         tickets = self.__getTickets(ruta.getPkRuta())#colecciona todos los boletos que hay sido vendidos
         asientos = 0 # utilizado para ver si al final son los mismos asientos en el autobous

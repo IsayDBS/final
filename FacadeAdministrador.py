@@ -5,35 +5,49 @@ class FacadeAdministrador():
 
     def agregarRuta(self):
         self.__administrador.mostrarRutasYParadas()
-        nombre = input("Nombre de la ruta a agregar: ").lower()
-        try:
-            asientos = int(input("Numero de asientos (De dejarlo vacio, se pondra por default 10): ") or "10")
-        except:
-            print("No es un numero de asientos validos")
-        lista_paradas = self.__administrador.paradasEntrada()
-        try:
-            precio = int(input("Precio por estacion(Si se deja vacio, este se vuelve aleatorio): ") or "0")
-        except:
-            print("No es un valor valido")
-        try:
-            self.__administrador.crearRuta(nombre, asientos,lista_paradas,precio)
-        except:
-            print("Ya existe una ruta con ese nombre, intenta uno diferente")
+        repito = True
+        while repito == True:
+            nombre = input("Nombre de la ruta a agregar: ").lower()
+            try:
+                asientos = int(input("Numero de asientos (De dejarlo vacio, se pondra por default 10): ") or "10")
+            except:
+                print("No es un numero de asientos validos")
+            lista_paradas = self.__administrador.paradasEntrada()
+            try:
+                precio = int(input("Precio por estacion(Si se deja vacio, este se vuelve aleatorio): ") or "0")
+            except:
+                print("No es un valor valido")
+            try:
+                self.__administrador.crearRuta(nombre, asientos,lista_paradas,precio)
+                #print("Precio por parada: " + str())
+            except:
+                print("Ya existe una ruta con ese nombre, intenta uno diferente")
+            repito = False
 
     def agregarParada(self):#Recordar que no se pueden agregar nombres iguales en las paradas
         nombre_parada = input("Nombre de la parada a crear: ").lower()
         self.__administrador.mostrarRutas()
-        ruta = input("Nombre de la ruta a la que vas a agregar: ").lower()
-        try:
-            posicion = int(input("Agrega en cierta posicion de la ruta(Si se deja vacia, se agregara al final de la ruta): ") or "0")
-        except:
-            print("No es una posicion valida")
-        try:
-            paradas = self.__administrador.crearParada(nombre_parada,ruta,posicion)
-            self.__administrador.actualizarRutaParadas(ruta,paradas)
-            self.__administrador.agregarParada(nombre_parada,ruta)
-        except:
-            print("No es una ruta valida")
+        repito = True
+        while repito == True:
+            try:
+                ruta = input("Nombre de la ruta a la que vas a agregar: ").lower()
+                self.__administrador.mostrarParadas(ruta)
+                repito = False
+            except:
+                print("No existe tal ruta")
+        repito2 = True
+        while repito2 == True:
+            try:
+                posicion = int(input("Agrega en cierta posicion de la ruta(Si se deja vacia, se agregara al final de la ruta): ") or "0")
+                repito2 = False
+            except:
+                print("No es una posicion valida")
+        #try:
+        paradas = self.__administrador.crearParada(nombre_parada,ruta,posicion)
+        self.__administrador.actualizarRutaParadas(ruta,paradas)
+        self.__administrador.agregarParada(nombre_parada,ruta)
+        #except:
+            #print("No es una ruta valida")
 
     def eliminarParada(self):
         #self.__administrador.mostrarRutas()
@@ -55,7 +69,7 @@ class FacadeAdministrador():
                     self.__administrador.actualizarRutaParadas(ruta,paradas)
             #self.__administrador.Parada(parada,ruta)
                 else:
-                    print("La estacion no puede ser borrada")
+                    print("La estacion no puede ser borrada, hay algunos boletos que entran o salen en esta terminal")
             except:
                 print("No existe tal parada")
 
@@ -65,15 +79,17 @@ class FacadeAdministrador():
         #print(self.__administrador.boletosPorRuta(nombre_ruta))
         repeticon = True
         while repeticon == True:
+        #if self.__administrador.mostrarRutas() == []:
+            #return
             try:
                 nombre_ruta = input("Escoge el nombre de la ruta: ").lower()
                 if self.__administrador.boletosPorRuta(nombre_ruta) == 0:#se puede eliminar la ruta, porque no hay boletos en esa ruta
             #necesitamos cada una de las paradas de la ruta
                     paradas = self.__administrador.getParadas(nombre_ruta)
-            #print(paradas)
+                    #print(paradas)
                     for l in paradas:
                         self.__administrador.eliminarParadaRuta(l,nombre_ruta)
-                        self.__administrador.eliminarRuta(nombre_ruta)
+                    self.__administrador.eliminarRuta(nombre_ruta)
                     repeticon = False
                 else:
                     print("No se puede eliminar la ruta, porque aun hay boletos en la ruta")

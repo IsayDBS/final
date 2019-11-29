@@ -13,6 +13,17 @@ class Boleto():
         self.__salida = salida#estacion donde sale
         self.__precio = precio
         self.__fecha_venta = fecha_venta
+        #self.diccionario = idDeBoletos()
+
+    #def idDeBoletos(self):
+        #string = "SELECT identificador FROM Boletos;"
+        #self.cursor.execute(string)
+        #lista = self.cursor.fetchall()
+        #dict = {}
+        #for l in lista:
+            #dict[l[0]] = 0
+        #return dict
+
 
     def getPrecio(self):
         return self.__precio

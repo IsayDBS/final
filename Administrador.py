@@ -26,7 +26,9 @@ class Administrador(Persona):
         self.actualizarRutaParadas(ruta,paradas)
 
     def crearRuta(self,nombre,asientos,lista_paradas,precio=0):
-        string_ruta = "INSERT INTO Ruta(nombre,asientos,paradas,precio) VALUES(" + self.setSQL(nombre.lower()) + " ," + str(asientos) + " ," + self.setSQL(self.listaString(lista_paradas)) + " ," + str(self.__setPrecio(precio)) + ");"
+        precio_0 = self.__setPrecio(precio)
+        string_ruta = "INSERT INTO Ruta(nombre,asientos,paradas,precio) VALUES(" + self.setSQL(nombre.lower()) + " ," + str(asientos) + " ," + self.setSQL(self.listaString(lista_paradas)) + " ," + str(precio_0) + ");"
+        #print("El precio de la ruta es : " + precio_0)
         #print(string_ruta)
         self.cursor.execute(string_ruta)
         self.connection.commit()
