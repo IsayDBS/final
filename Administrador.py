@@ -1,30 +1,32 @@
+import random
 from Ruta import *
 from Persona import *
 class Administrador(Persona):
     def __init__(self, name,cursor,connection):
         super().__init__(name,cursor,connection)
 
-    def getParadas(self,nombre_ruta):
-        string_paradas = "SELECT paradas FROM Ruta WHERE nombre = " + self.__setSQL(nombre_ruta) + ";"
-        self.cursor.execute(string_paradas)
-        return self.stringLista(self.cursor.fetchall()[0][0])
+    def __setPrecio(self,precio=0):
+        if precio == 0:
+            precio=random.randint(1,10)
+            c = random.randint(1,10)
+            return precio * c
+        return precio
+
+
 
     def obtenerRuta(self,nombre):
-        string_nombre = "SELECT * FROM Ruta WHERE nombre = " + self.__setSQL(nombre.lower()) + ";"
+        string_nombre = "SELECT * FROM Ruta WHERE nombre = " + self.setSQL(nombre.lower()) + ";"
         self.cursor.execute(string_nombre)
         lista = self.cursor.fetchall()
         return lista
-
-    def __setSQL(self,string):
-        return "'" + string + "'"
 
     def eliminarParadaRuta(self,parada,ruta):
         self.eliminarParada(parada,ruta)#Este solo elimina de la tabla parada
         paradas = self.deleteParada(parada,ruta)#Esto en su conjunto elimina la parada de las rutas
         self.actualizarRutaParadas(ruta,paradas)
 
-    def crearRuta(self,nombre,asientos,lista_paradas):
-        string_ruta = "INSERT INTO Ruta(nombre,asientos,paradas) VALUES(" + self.__setSQL(nombre.lower()) + " ," + str(asientos) + " ," + self.__setSQL(self.listaString(lista_paradas)) + ");"
+    def crearRuta(self,nombre,asientos,lista_paradas,precio=0):
+        string_ruta = "INSERT INTO Ruta(nombre,asientos,paradas,precio) VALUES(" + self.setSQL(nombre.lower()) + " ," + str(asientos) + " ," + self.setSQL(self.listaString(lista_paradas)) + " ," + str(self.__setPrecio(precio)) + ");"
         #print(string_ruta)
         self.cursor.execute(string_ruta)
         self.connection.commit()
@@ -43,14 +45,27 @@ class Administrador(Persona):
                 #la parada existe, actualiza una ruta a esa parada
                 self.actualizarParadasAnteriores(l,nombre)
 
+    def paradasEntrada(self):
+        repeticion = True
+        while repeticion == True:
+            try:
+                lista = []
+                valor = int(input("Introduce el numero de paradas que agregaras: "))
+                for v in range(valor):
+                    lista.append(input("Parada: "))
+                repeticion = False
+            except:
+                print("No es valor valido")
+        return lista
+
     def agregarParada(self,l,nombre):
-        string_paradas = "INSERT INTO Paradas(nombre,rutas) VALUES(" + self.__setSQL(l.lower()) + " ," + self.__setSQL(nombre) + ");"
+        string_paradas = "INSERT INTO Paradas(nombre,rutas) VALUES(" + self.setSQL(l.lower()) + " ," + self.setSQL(nombre) + ");"
         #print(string_paradas)
         self.cursor.execute(string_paradas)
         self.connection.commit()
 
     def revisaParada(self,nombre_parada):
-        string_revisa = "SELECT *FROM Paradas WHERE nombre = " + self.__setSQL(nombre_parada) + ";"
+        string_revisa = "SELECT *FROM Paradas WHERE nombre = " + self.setSQL(nombre_parada) + ";"
         self.cursor.execute(string_revisa)
         lista = self.cursor.fetchall()
         if lista == []:
@@ -59,7 +74,7 @@ class Administrador(Persona):
             return True#La parada existe
 
     def __getPkRuta(self,nombre_ruta):
-        string_pk = "SELECT pk_id_ruta FROM Ruta WHERE nombre = " + self.__setSQL(nombre_ruta) + ";"
+        string_pk = "SELECT pk_id_ruta FROM Ruta WHERE nombre = " + self.setSQL(nombre_ruta) + ";"
         self.cursor.execute(string_pk)
         list = self.cursor.fetchall()
         if list == []:
@@ -77,7 +92,7 @@ class Administrador(Persona):
             return len(self.cursor.fetchall())
 
     def paradasLista(self,nombre,nombre_ruta):
-        string_obtener = "SELECT rutas FROM Paradas WHERE nombre = " + self.__setSQL(nombre) + ";"
+        string_obtener = "SELECT rutas FROM Paradas WHERE nombre = " + self.setSQL(nombre) + ";"
         self.cursor.execute(string_obtener)
         cadena = self.cursor.fetchall()
         lista = self.stringLista(cadena[0][0])
@@ -87,26 +102,26 @@ class Administrador(Persona):
 
     def actualizarParadasAnteriores(self,nombre,nombre_ruta):
         lista = self.paradasLista(nombre,nombre_ruta)
-        string_rutas="UPDATE Paradas SET rutas = " + self.__setSQL(self.listaString(lista)) + " WHERE nombre = " + self.__setSQL(nombre.lower()) +";"
+        string_rutas="UPDATE Paradas SET rutas = " + self.setSQL(self.listaString(lista)) + " WHERE nombre = " + self.setSQL(nombre.lower()) +";"
         self.cursor.execute(string_rutas)
         self.connection.commit()
 
 
-    def mostrarRutas(self):
-        print(self.listaString(self.__ruta.getParadas()))
+    #def mostrarRutas(self):
+        #print(self.listaString(self.__ruta.getParadas()))
 
     def actualizarRutaParadas(self,nombre,lista_paradas):
-        string_ruta = "UPDATE Ruta SET paradas = " + self.__setSQL(self.listaString(lista_paradas)) + " WHERE nombre = " + self.__setSQL(nombre.lower()) + ";"
+        string_ruta = "UPDATE Ruta SET paradas = " + self.setSQL(self.listaString(lista_paradas)) + " WHERE nombre = " + self.setSQL(nombre.lower()) + ";"
         self.cursor.execute(string_ruta)
         self.connection.commit()
 
     def eliminarRuta(self,nombre):
-        string_ruta = "DELETE FROM Ruta WHERE nombre = " + self.__setSQL(nombre.lower()) + ";"
+        string_ruta = "DELETE FROM Ruta WHERE nombre = " + self.setSQL(nombre.lower()) + ";"
         self.cursor.execute(string_ruta)
         self.connection.commit()
 
     def boletosPorParada(self,parada):
-        string_boletos = "SELECT identificador FROM Boletos WHERE estacion_entrada = " + self.__setSQL(parada) + " OR estacion_salida = " + self.__setSQL(parada) + ";"
+        string_boletos = "SELECT identificador FROM Boletos WHERE estacion_entrada = " + self.setSQL(parada) + " OR estacion_salida = " + self.setSQL(parada) + ";"
         self.cursor.execute(string_boletos)
         if self.cursor.fetchall() == []:
             return True #La estacion puede ser borrada
@@ -115,7 +130,7 @@ class Administrador(Persona):
 
     def crearParada(self,nombre,nombre_ruta,posicion = 0):
         lista_paradas = self.getParadas(nombre_ruta)
-        if posicion == 0:
+        if posicion == 0 or posicion >= len(lista_paradas):
             lista_paradas.append(nombre)
         else:
             lista_paradas.insert(posicion,nombre)
@@ -127,7 +142,7 @@ class Administrador(Persona):
         return lista_paradas
 
     def getRutas(self,nombre):
-        string_rutas = "SELECT rutas FROM Paradas WHERE nombre = " + self.__setSQL(nombre) + ";"
+        string_rutas = "SELECT rutas FROM Paradas WHERE nombre = " + self.setSQL(nombre) + ";"
         self.cursor.execute(string_rutas)
         rutas = self.cursor.fetchall()
         return self.stringLista(rutas[0][0])
@@ -140,16 +155,16 @@ class Administrador(Persona):
         #print(algo)
         #lista = self.getRutas(nombre)
         if len(algo2) == 0:
-            string_borrar = "DELETE FROM Paradas WHERE nombre = " + self.__setSQL(nombre) + ";"
+            string_borrar = "DELETE FROM Paradas WHERE nombre = " + self.setSQL(nombre) + ";"
         else:
             #algo2 = self.stringLista(algo)
             #print(algo2)
             #algo2.remove(ruta)
-            string_borrar = "UPDATE Paradas SET rutas = " + self.__setSQL(self.listaString(algo2)) + "WHERE nombre = " + self.__setSQL(nombre) + ";"
+            string_borrar = "UPDATE Paradas SET rutas = " + self.setSQL(self.listaString(algo2)) + "WHERE nombre = " + self.setSQL(nombre) + ";"
         self.cursor.execute(string_borrar)
         self.connection.commit()
 
     def eliminarRuta(self,nombre):
-        string = "DELETE FROM Ruta WHERE nombre = " + self.__setSQL(nombre) + ";"
+        string = "DELETE FROM Ruta WHERE nombre = " + self.setSQL(nombre) + ";"
         self.cursor.execute(string)
         self.connection.commit()

@@ -7,21 +7,57 @@ class FacadeVendedor():
     #entrada, la estacion donde entra
     #salida, la estacion donde sale
     #nombre_ruta, la ruta donde compraran boletos
-    def ventaBoletos(self,fecha_salida,entrada, salida):#fecha salida de la forma yyyy,mes,anio hh/mm/ss
-        print(self.__vendedor.getRutas2Paradas(entrada,salida))
-        if self.__vendedor.getRutas2Paradas(entrada,salida) == "":
-            print("No hay ruta que pase por estas dos estaciones")
+    def ventaBoletos(self):#fecha salida de la forma yyyy,mes,anio hh/mm/ss
+        self.__vendedor.mostrarRutasYParadas()
+        try:
+            entrada = input("Terminal donde quieres entrar: ").lower()
+            salida = input("Terminal donde quieres llegar: ").lower()
+            if entrada == salida:
+                print("Son la misma parada, no se puede vender el boleto")
+                return
+            if self.__vendedor.getRutas2Paradas(entrada,salida) == "":
+                print("No hay ruta que pase por estas dos estaciones")
+                return
+        except:
+            print("Las terminales no estan registradas en el sistema, intenta de nuevo")
             return
-        nombre_ruta = input("Entra la ruta en la cual quieras introducir el boleto\n")
-        ruta = self.__vendedor.getRuta(nombre_ruta.lower())
-        if self.__vendedor.verificaBoleto(entrada.lower(),ruta,salida.lower()) == True:#hay un lugar libre (entrada,salida,ruta,self.tickets)
-            bl = Boleto(fecha_salida, entrada.lower(), salida.lower(),str(dt.datetime.now()),ruta)
-            #print(bl)
-            self.__vendedor.boletoVendido(bl)
+        self.__vendedor.mostrarRutasVend(entrada,salida)
+        #no_boletos = int(input("Numero de boletos(Si se deja vacio, se entendera que se vendera solo uno): ") or "1")
+        try:
+            nombre_ruta = input("Entra la ruta en la cual quieras introducir el(los) boleto(s): ")
+            ruta = self.__vendedor.getRuta(nombre_ruta.lower())
+        except:
+            print("No es una ruta valida, intenta de nuevo")
+            return
+        if ruta == None:
+            print("No hay tal ruta")
+            return
+        #self.__vendedor.noDeBoletos(no_boletos,nombre_ruta)
+        boletos_disponibles = self.__vendedor.boletosDisponibles(ruta,entrada,salida)
+        if boletos_disponibles == 0:
+            print("No hay boletos disponibles para esta ruta")
+            return
         else:
-            print("No hay boletos para esta terminal")
+            print("Hay " + str(boletos_disponibles) + " asientos disponibles en esta ruta")
+            while repeticion == True:
+                no_boletos = int(input("Numero de boletos(Si se deja vacio, se entendera que se vendera solo uno): ") or "1")
+                if no_boletos > boletos_disponibles:
+                    print("No se puede imprimir la cantidad de boletos que pides, intenta con otro")
+                else:
+                    precio = self.__vendedor.getPrecio(nombre_ruta) * self.__vendedor.noParadas(entrada,salida,ruta)
+        #print(precio)
+        #print(ruta.getParadas())
+                    for b in range(0,no_boletos):
+            #if self.__vendedor.verificaBoleto(entrada.lower(),ruta,salida.lower()) == True:#hay un lugar libre (entrada,salida,ruta,self.tickets)
+                        bl = Boleto(precio,entrada.lower(), salida.lower(),ruta,str(dt.datetime.now()))#,str(dt.datetime.now())
+                        print(bl)
+                        self.__vendedor.boletoVendido(bl)
+                    repeticion = False
+            #else:
+                #print("No hay boletos para esta terminal")
 
-    def borrarBoletos(self,id):
+    def borrarBoletos(self):
+        id = input("Introduce el identificador del boleto: ").lower()
         self.__vendedor.cancelaBoletos(id)
 
     def getRutasDParada(self,parada):

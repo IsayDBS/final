@@ -10,6 +10,26 @@ class Vendedor(Persona):
 #    def obtenerTickets(self):
 #        pass
 
+    def boletosDisponibles(self,ruta,entrada,salida):
+        tickets = self.__getTickets(ruta.getPkRuta())#colecciona todos los boletos que hay sido vendidos
+        asientos = 0 # utilizado para ver si al final son los mismos asientos en el autobous
+        for t in tickets:
+            if self.__ocupadoSalida(t,entrada,ruta,salida) == True: #revisa si hay boletos que ya tengan ocupados cierta posicion
+                asientos += 1
+        return ruta.getAsientos() - asientos
+
+
+    def mostrarRutasVend(self,entrada,salida):
+        lista = self.stringLista(self.getRutas2Paradas(entrada,salida))
+        #print(lista)
+        #print(len(lista))
+        i = 0
+        #print(lista)
+        for l in lista:
+            i += 1
+            #print(l)
+            print("" + str(i) + "." + l.capitalize())
+
     def getRutasDParada(self,nombreParada):
         string_rutas = "SELECT nombre FROM Ruta WHERE paradas LIKE '%" + nombreParada +"%';"
         self.cursor.execute(string_rutas)
@@ -28,11 +48,21 @@ class Vendedor(Persona):
 #        else:
 #            print("No hay boletos para esta terminal")
 
+    def getPrecio(self,ruta):
+        string_precio = "SELECT precio FROM Ruta WHERE nombre = " + self.setSQL(ruta) + ";"
+        self.cursor.execute(string_precio)
+        return self.cursor.fetchall()[0][0]
+
+    def noParadas(self,entrada,salida,ruta):
+        lista = ruta.getParadas()
+        estaciones = (lista.index(salida)+1)-(lista.index(entrada)+1)
+        return estaciones
+
     def getRuta(self,ruta):
-        string_ruta = "SELECT * FROM Ruta WHERE nombre = "+ self.__setSQL(ruta) +";"
+        string_ruta = "SELECT * FROM Ruta WHERE nombre = "+ self.setSQL(ruta) +";"
         self.cursor.execute(string_ruta)
         lista = self.cursor.fetchall()
-        return Ruta(lista[0][1],lista[0][2],self.stringLista(lista[0][3]),lista[0][0])
+        return Ruta(lista[0][1],lista[0][2],self.stringLista(lista[0][3]),lista[0][0],lista[0][4])
 
     def __getRutaNombre(self,pk):
         string_ruta = "SELECT nombre FROM Ruta WHERE pk_id_ruta = "+ str(pk) +";"
@@ -51,16 +81,27 @@ class Vendedor(Persona):
         return tickets
 
     def cancelaBoletos(self, identificador):
-        string_cancelado = "DELETE FROM Boletos WHERE identificador = " + self.__setSQL(identificador) + ";"
+        string_cancelado = "DELETE FROM Boletos WHERE identificador = " + self.setSQL(identificador) + ";"
         #print(string_cancelado)
         self.cursor.execute(string_cancelado)
         self.connection.commit()
 
-    def __setSQL(self,string):
-        return "'" + string.lower() + "'"
+    def boletosValidos(self,boletos,entrada,ruta,estacion_llegada):
+        otros_boletos = 0
+        for i in range(boletos):
+            if self.verificaBoleto() == True:
+                otros_boletos += 1
+
+    #def noDeBoletos(self,no_boletos,nombre_ruta,entrada,estacion_llegada,ruta):
+        #contador = 0
+        #for l in range(0,no_boletos):
+        #    if self.verificaBoleto(entrada,ruta,estacion_llegada) == True:
+            #    contador += 1
+    #def __setSQL(self,string):
+        #return "'" + string.lower() + "'"
 
     def boletoVendido(self,boleto):
-        string_vendido = "INSERT INTO Boletos(identificador,fecha_venta,fecha_salida,estacion_entrada,estacion_salida,fk_id_ruta) VALUES(" + self.__setSQL(boleto.getId()) + "," + self.__setSQL(boleto.getFechaVenta()) + "," + self.__setSQL(boleto.getFechaSalida()) + "," + self.__setSQL(boleto.getEntrada()) + "," + self.__setSQL(boleto.getSalida()) + "," + str(boleto.getPKRuta()) + ");"
+        string_vendido = "INSERT INTO Boletos(identificador,precio,fecha_venta,estacion_entrada,estacion_salida,fk_id_ruta) VALUES(" + self.setSQL(boleto.getId()) + "," + str(boleto.getPrecio()) + "," + self.setSQL(boleto.getFechaVenta()) + "," + self.setSQL(boleto.getEntrada()) + "," + self.setSQL(boleto.getSalida()) + "," + str(boleto.getPKRuta()) + ");"
         #print(string_vendido)
         self.cursor.execute(string_vendido)
         self.connection.commit()
