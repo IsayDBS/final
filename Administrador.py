@@ -170,3 +170,37 @@ class Administrador(Persona):
         string = "DELETE FROM Ruta WHERE nombre = " + self.setSQL(nombre) + ";"
         self.cursor.execute(string)
         self.connection.commit()
+
+
+    def getRuta(self,ruta):
+        string_ruta = "SELECT * FROM Ruta WHERE nombre = "+ self.setSQL(ruta) +";"
+        self.cursor.execute(string_ruta)
+        lista = self.cursor.fetchall()
+        return Ruta(lista[0][1],lista[0][2],self.stringLista(lista[0][3]),lista[0][0],lista[0][4])
+
+    def verificarBoletos(self,nombre_ruta,nombre_parada):
+        ruta = self.getRuta(nombre_ruta)
+        #print(ruta.getNombre())
+        #print(ruta.getPkRuta())
+        string = "SELECT estacion_entrada,estacion_salida FROM Boletos WHERE fk_id_ruta = " + str(ruta.getPkRuta()) + ";"
+        self.cursor.execute(string)
+        lista = self.cursor.fetchall()
+        #print(lista)
+        for i in lista:
+            if self.verificarParada(i[0],i[1],nombre_ruta,nombre_parada) == True:
+                return True #la parada se encuentra en una ruta de los boletos, no se puede eliminar
+        return False #no se encuentra en una ruta de los boletos, se puede eliminar
+
+    def verificarParada(self,entrada,salida,ruta,a_borrar):
+        string = "SELECT paradas FROM Ruta WHERE nombre = " + self.setSQL(ruta) + ";"
+        self.cursor.execute(string)
+        lista=self.cursor.fetchall()
+        lista1 = self.stringLista(lista[0][0])
+        entrada1 = lista1.index(entrada)
+        salida1 = lista1.index(salida)
+        lista2 = []
+        for i in range(entrada1,salida1+1):
+            lista2.append(lista1[i])
+        if a_borrar in lista2:
+            return True #la estacion esta en boleto
+        return False

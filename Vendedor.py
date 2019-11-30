@@ -24,7 +24,7 @@ class Vendedor(Persona):
         #print(boletos_disponibles)
         lista2 = []
         for i in range(len(lista)):
-            if boletos_disponibles[i] == 0:
+            if boletos_disponibles[i] <= 0:
                 #boletos_disponibles.pop(i)
                 #lista.pop(i)
                 continue
@@ -137,7 +137,7 @@ class Vendedor(Persona):
             #print(t)
             if self.__ocupadoSalida(t,entrada,ruta,estacion_llegada) == True: #revisa si hay boletos que ya tengan ocupados cierta posicion
                 asientos += 1
-        if asientos >= ruta.getAsientos():
+        if asientos >= ruta.getAsientos() or asientos <= 0:
             return False#NO se pueden vender mas boletos
         return True#SE PUEDEN VENDER MAS BOLETOS"""
 
@@ -156,7 +156,7 @@ class Vendedor(Persona):
             if ruta.getParadas()[i] == salida and i != salida_ticket:
                 return True #True, significa que el asiento esta ocupado
         #revisa por fuera
-        if entra_nvo < entra_ticket and sale_viejo <= salida_ticket:
+        if entra_nvo < entra_ticket and (sale_viejo >= salida_ticket or sale_viejo < salida_ticket):
             return True
         return False #El asiento esta desocupado
 

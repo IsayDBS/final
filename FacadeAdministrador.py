@@ -63,7 +63,7 @@ class FacadeAdministrador():
                 return
             try:
                 parada = input("Nombre de la parada a eliminar: ").lower()
-                if self.__administrador.boletosPorParada(parada) == True:
+                if self.__administrador.boletosPorParada(parada) == True and self.__administrador.verificarBoletos(ruta,parada) == False:
             #print(paradas)
                     self.__administrador.eliminarParada(parada,ruta)#Este solo elimina de la tabla parada
                     paradas = self.__administrador.deleteParada(parada,ruta)#Esto en su conjunto elimina la parada de las rutas
