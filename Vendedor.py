@@ -156,7 +156,7 @@ class Vendedor(Persona):
             if ruta.getParadas()[i] == salida and i != salida_ticket:
                 return True #True, significa que el asiento esta ocupado
         #revisa por fuera
-        if entra_nvo < entra_ticket and (sale_viejo >= salida_ticket or sale_viejo < salida_ticket):
+        if (entra_nvo < entra_ticket and sale_viejo >= salida_ticket) or (sale_viejo < salida_ticket and entra_nvo > salida_ticket):
             return True
         return False #El asiento esta desocupado
 
