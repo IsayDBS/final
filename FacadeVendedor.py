@@ -16,10 +16,18 @@ class FacadeVendedor():
                 salida = input("Terminal donde quieres llegar: ").lower()
                 if entrada == salida:
                     print("Son la misma parada, no se puede vender el boleto")
-                    return
+                    continuar= input("Deseas continuar(si(Y), no (Culaquier otra cosa))").lower
+                    if continuar == "y":
+                        continue
+                    else:
+                        return
                 elif self.__vendedor.getRutas2Paradas(entrada,salida) == "":
-                    print("No hay ruta que pase por estas dos estaciones")
-                    continue
+                    print("No hay ruta que pase por estas dos estaciones, deseas continuar(si(Y),no(Cualquier otra cosa))?")
+                    continuar = input().lower
+                    if continuar == "y":
+                        continue
+                    else:
+                        return
                 else:
                     repito = False
             except:
@@ -34,7 +42,10 @@ class FacadeVendedor():
         repito2 = True
         while repito2 == True:
             try:
+                print("0 para salir de la venta")
                 nombre_ruta = input("Entra la ruta en la cual quieras introducir el(los) boleto(s): ")
+                if nombre_ruta == "0":
+                    return
                 ruta = self.__vendedor.getRuta(nombre_ruta.lower())
                 if ruta.getNombre() not in importante:
                     print("Tal ruta no pasa por las terminales")

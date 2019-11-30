@@ -28,7 +28,9 @@ class Vendedor(Persona):
                 #boletos_disponibles.pop(i)
                 #lista.pop(i)
                 continue
-            print(str(i+1) + "." + lista[i].capitalize() + " tiene " + str(boletos_disponibles[i]) + " boletos." )
+            ruta = self.getRuta(lista[i])
+            precio = self.getPrecio(lista[i]) * self.noParadas(entrada,salida,ruta)
+            print(str(i+1) + "." + lista[i].capitalize() + " tiene " + str(boletos_disponibles[i]) + " boletos. $" + str(precio))
             lista2.append(lista[i])
         return lista2
 

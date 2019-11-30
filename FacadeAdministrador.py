@@ -12,14 +12,16 @@ class FacadeAdministrador():
                 asientos = int(input("Numero de asientos (De dejarlo vacio, se pondra por default 10): ") or "10")
             except:
                 print("No es un numero de asientos validos")
+                continue
             lista_paradas = self.__administrador.paradasEntrada()
             try:
                 precio = int(input("Precio por estacion(Si se deja vacio, este se vuelve aleatorio): ") or "0")
             except:
                 print("No es un valor valido")
+                continue
             try:
                 self.__administrador.crearRuta(nombre, asientos,lista_paradas,precio)
-                #print("Precio por parada: " + str())
+                #print("Precio por parada: " + str(self.__administrador.precioRuta(nombre)))
             except:
                 print("Ya existe una ruta con ese nombre, intenta uno diferente")
             repito = False
@@ -58,6 +60,7 @@ class FacadeAdministrador():
                 self.__administrador.mostrarParadas(ruta)
             except:
                 print("No existe tal ruta")
+                return
             try:
                 parada = input("Nombre de la parada a eliminar: ").lower()
                 if self.__administrador.boletosPorParada(parada) == True:
@@ -96,3 +99,4 @@ class FacadeAdministrador():
                     repeticon = False
             except:
                 print("No es una ruta en la base de datos")
+                repeticon = False

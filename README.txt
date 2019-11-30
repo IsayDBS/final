@@ -1,11 +1,16 @@
 Proyecto de Terminal de Autobuses
 Este proyecto esta hecho para imitar una base de datos de autobuses, en la cual hay un Administrador y un vendedor.
 El Administrador puede agregar y quitar rutas, igual con las paradas, exceptuado casos en que haya boletos en las rutas
-o boletos que sean entrada o salida de los boletos
+o boletos que sean entrada o salida de los boletos.
+Cuando el administrador borra una ruta, esta borrara todas las terminales, exceptuando cuando son compartidas, en ese caso
+solo borra la terminal que le correspondia a esa estacion, manteniendo intacta la estacion de la otra ruta.
+No se permite nombre de rutas repetidos
+Si en una ruta hay una sola parada y se borra la parada, la ruta se borra igual, es lo mismo que decir que no existen rutas "vacias"
+Si se quiere hacer una interseccion, solo basta con agregar el nombre de la misma parada a la ruta.
 El vendedor puede vender boletos en cualquier ruta.
 El vendedor cancela los boletos con el identificador de los boletos
 Este proyecto fue pensado para que el administrador tenga en mente que las rutas son en una direccion y sin repertir estaciones, es decir, si se crea una parada
-o cuando se crea una ruta, no puede haber dos terminales con el mismo nombre
+o cuando se crea una ruta, no puede haber dos terminales con el mismo nombre. (Como las rutas del transporte publico)
 La forma de correr el programa es el siguiente
 Hacer un .env con la informacion de tu mysql, correr el archivo final.sql
 El programa recibe un valor desde afuera, sea 1 para el administrador o

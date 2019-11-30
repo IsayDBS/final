@@ -65,6 +65,12 @@ class Persona():
                 print("" + str(i) + "." + l.capitalize())
         return lista
 
+    def precioRuta(self,ruta):
+        string = "SELECT precio FROM Ruta WHERE nombre = " + self.setSQL(ruta) + ";"
+        self.cursor.execute()
+        lista = self.cursor.fetchall()
+        return lista[0][0]
+
     def mostrarRutasYParadas(self):
         string = "SELECT nombre,paradas FROM Ruta;"
         self.cursor.execute(string)
