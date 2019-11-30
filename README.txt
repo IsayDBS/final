@@ -2,6 +2,7 @@ Proyecto de Terminal de Autobuses
 Este proyecto esta hecho para imitar una base de datos de autobuses, en la cual hay un Administrador y un vendedor.
 El Administrador puede agregar y quitar rutas, igual con las paradas, exceptuado casos en que haya boletos en las rutas
 o boletos que sean entrada o salida de los boletos.
+El programa no diferencea entre mayusculas y minusculas, por lo tanto, cuando metes rutas o nombre de paradas, es lo kismo meterlo con mayusculas que minisculas.
 Cuando el administrador borra una ruta, esta borrara todas las terminales, exceptuando cuando son compartidas, en ese caso
 solo borra la terminal que le correspondia a esa estacion, manteniendo intacta la estacion de la otra ruta.
 No se permite nombre de rutas repetidos
